@@ -50,12 +50,9 @@ CHOptimizedMethod(1, self, void, CMessageMgr, onRevokeMsg, id, arg1){
         return [m_nsContent substringWithRange:[result rangeAtIndex:1]];
     };
     
+    id classCMessageWrap = [objc_getClass("CMessageWrap") performSelector:@selector(alloc)];;
+    id msgWrap = [classCMessageWrap performSelector:@selector(initWithMsgType:) withObject:0x2710];
     
-    
-    Method methodCMessageWrap = class_getClassMethod(objc_getClass("CMessageWrap"), @selector(alloc));
-    IMP impCMessageWrap = method_getImplementation(methodCMessageWrap);
-    id MMCMessageWrap = impCMessageWrap(objc_getClass("CMessageWrap"), @selector(alloc));
-    id msgWrap = objc_msgSend(MMCMessageWrap, @selector(initWithMsgType:),0x2710);
     
     [msgWrap performSelector:@selector(setM_nsFromUsr:) withObject:m_nsFromUsr];
     [msgWrap performSelector:@selector(setM_nsToUsr:) withObject:m_nsToUsr];
@@ -64,10 +61,8 @@ CHOptimizedMethod(1, self, void, CMessageMgr, onRevokeMsg, id, arg1){
     NSString *sendContent = [NSString stringWithFormat:@"%@ 想撤回消息并亲了你一口！", name ? name : m_nsFromUsr];
     
     
-    
     Ivar nsuiCreateTimeIvar = class_getInstanceVariable(objc_getClass("CMessageWrap"), "m_uiCreateTime");
     NSString *m_uiCreateTime = object_getIvar(arg1, nsuiCreateTimeIvar);
-    
     
     [msgWrap performSelector:@selector(setM_uiStatus:) withObject:@(0x4)];
     [msgWrap performSelector:@selector(setM_nsContent:) withObject:sendContent];
@@ -76,6 +71,7 @@ CHOptimizedMethod(1, self, void, CMessageMgr, onRevokeMsg, id, arg1){
     
     [self AddLocalMsg:parseSession() MsgWrap:msgWrap fixTime:0x1 NewMsgArriveNotify:0x0];
 }
+
 
 
 //所有被hook的类和函数放在这里的构造函数中
